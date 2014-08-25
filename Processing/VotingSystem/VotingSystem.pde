@@ -20,9 +20,9 @@ int displayCounter = 0;
 String displayText = ""; // the number that shows on the screen at a given time
 boolean statsMode = false; // when it's true the program goes for the statistics screen
 int life = 0; // it determines for how long are the likes grouped together if they arrive within the lifeLimit
-int initialLifeLimit = 100;
+int initialLifeLimit = 50;
 int lifeLimit = initialLifeLimit; // it sets the frame for how long the likes are grouped together to be displayed
-int lifeLimitDecrement = 10; // it sets how fast does the lifeLimit decreses. For every like that arrives the time frame to group likes resets but shrinks.
+int lifeLimitDecrement = 3; // it sets how fast does the lifeLimit decreses. For every like that arrives the time frame to group likes resets but shrinks.
 String directMessageReceiver = "juancolino";
 int[][] likeHistory;
 int historyIndex = 0;
@@ -51,10 +51,10 @@ void setup() {
 
   // Twitter auth
   ConfigurationBuilder cb = new ConfigurationBuilder();
-  cb.setOAuthConsumerKey("6V9O7RtUhPsyoMOXFr4F1ilmG");
-  cb.setOAuthConsumerSecret("E4sZj40xIumpCr0VV75zbJDWYyadC2pDjfbfga4RtHUzWuhXPM");
-  cb.setOAuthAccessToken("28091397-qdtFTP5TpasjkFvQuRnmillX2zdJ1jjp8XeUou7ul");
-  cb.setOAuthAccessTokenSecret("xXXLoOo5amrZGJijfThbfhX8p4sSRq0sCuUAY5PWFi1ep");
+  cb.setOAuthConsumerKey("2fLX9G7i9Vik9q5WCYrhz1KKK");
+  cb.setOAuthConsumerSecret("aiImDPh9MzjJKGTYF2q58Z5onAO4xrSNd8pUvCBrP4UVYv6LZk");
+  cb.setOAuthAccessToken("2765785566-jgCjL5GEi4wj7U0yUXFhtD4YjIsrmTMh2Y4bkJB");
+  cb.setOAuthAccessTokenSecret("w4LS5TWu13wBux2adEBbLJmAcRdtXGBzWKpeZEezT7Qk1");
   TwitterFactory tf = new TwitterFactory(cb.build());
   twitter = tf.getInstance();
 
@@ -102,7 +102,11 @@ void draw() {
       displayCounter = displayCounter + (updatedLikes - likes);
       likes = updatedLikes;
       life = 0;
-      lifeLimit = lifeLimit - lifeLimitDecrement;
+      if (lifeLimit - lifeLimitDecrement < 10) {
+        lifeLimit = 10;
+      } else {
+        lifeLimit = lifeLimit - lifeLimitDecrement;
+      }
     }
 
     if (displayCounter != 0) {
@@ -139,7 +143,7 @@ void draw() {
     if (updatedFlags > flags) {
       // send twitter PM
       try {
-        DirectMessage message = twitter.sendDirectMessage(directMessageReceiver, "Elaborate more " + str(flags));
+        DirectMessage message = twitter.sendDirectMessage(directMessageReceiver, "Elaborate more " + str(updatedFlags));
         System.out.println("Direct message successfully sent to " + message.getRecipientScreenName());
       } 
       catch (TwitterException te) {
